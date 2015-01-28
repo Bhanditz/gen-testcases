@@ -63,6 +63,8 @@ plan #{show $ Prelude.length $ file_couplets_out file}
 |] in
   OutFile {file_write_name = file_name_out file, file_contents = mconcat [top, rest]}
   
+write_file file = do
+  writefile (fromText $ file_write_name file) (file_contents file)
 
 gettwo (a:b:lines) = (a, b):(gettwo lines)
 gettwo _           = []
@@ -81,12 +83,13 @@ runfile file = do
   new_couplets <- mapM coupletrunner $ file_couplets file
   return TestOutputFile { file_name_out = pack $ dropExtension $ unpack $ file_name file, file_couplets_out = new_couplets }
 
-main = shelly $ verbosely $ escaping False $ do
+main = shelly $ escaping False $ do
   input_struct <- liftIO $ cmdArgs input_command
   let files = Prelude.filter (\file -> hasExt "in" $ fromText file) $ testcase_files input_struct
   files_text <- mapM filesplitter files
   files_out_data <- mapM runfile files_text
   let each_file_out = Prelude.map put_through_templates files_out_data
-  echo $ pack $ show files_text
-  echo $ pack $ show files_out_data
-  echo $ pack $ show each_file_out
+  --echo $ pack $ show files_text
+  --echo $ pack $ show files_out_data
+  --echo $ pack $ show each_file_out
+  mapM_ write_file each_file_out
