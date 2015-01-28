@@ -22,7 +22,13 @@ input_command = TestcaseFiles {
     details ["gen-testcases generates .t files in the format I use from names and commands in .t.in files",""
             ,"To populate a t directory from the template files stored inside type:","  gen-testcases t/*.t.in"]
 
+filesplitter filename = do
+  contents <- readfile $ fromText filename 
+  let split = T.lines contents
+  return split
+
 main = shelly $ verbosely $ do
   input_struct <- liftIO $ cmdArgs input_command
   let files = testcase_files input_struct
-  echo $ pack $ show files
+  files_text <- mapM filesplitter files
+  echo $ pack $ show files_text
