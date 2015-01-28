@@ -24,6 +24,7 @@ executable gen-testcases
                        shelly,
                        text,
                        cmdargs,
-                       shakespeare
+                       shakespeare,
+                       filepath
   hs-source-dirs:      src
   default-language:    Haskell2010
