@@ -1,0 +1,4 @@
+Test that echo works
+echo 3
+Test that shell arithmetic works
+echo $((3 + 3))
